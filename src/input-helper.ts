@@ -1,7 +1,7 @@
 import * as core from '@actions/core'
-import * as fsHelper from './fs-helper'
 import * as github from '@actions/github'
 import * as path from 'path'
+import * as fsHelper from './fs-helper'
 import {IGitSourceSettings} from './git-source-settings'
 
 export function getInputs(): IGitSourceSettings {
@@ -87,6 +87,9 @@ export function getInputs(): IGitSourceSettings {
     result.fetchDepth = 0
   }
   core.debug(`fetch depth = ${result.fetchDepth}`)
+
+  // Sparse Checkout
+  result.sparseCheckoutPath = core.getInput('sparse-checkout-path')
 
   // LFS
   result.lfs = (core.getInput('lfs') || 'false').toUpperCase() === 'TRUE'

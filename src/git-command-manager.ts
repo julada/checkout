@@ -1,12 +1,12 @@
 import * as core from '@actions/core'
 import * as exec from '@actions/exec'
-import * as fshelper from './fs-helper'
 import * as io from '@actions/io'
 import * as path from 'path'
+import * as fshelper from './fs-helper'
+import {GitVersion} from './git-version'
 import * as refHelper from './ref-helper'
 import * as regexpHelper from './regexp-helper'
 import * as retryHelper from './retry-helper'
-import {GitVersion} from './git-version'
 
 // Auth header not supported before 2.9
 // Wire protocol v2 not supported before 2.18
@@ -25,6 +25,7 @@ export interface IGitCommandManager {
   ): Promise<void>
   configExists(configKey: string, globalConfig?: boolean): Promise<boolean>
   fetch(refSpec: string[], fetchDepth?: number): Promise<void>
+  sparseCheckout(path): Promise<void>
   getDefaultBranch(repositoryUrl: string): Promise<string>
   getWorkingDirectory(): string
   init(): Promise<void>
@@ -194,6 +195,17 @@ class GitCommandManager {
     await retryHelper.execute(async () => {
       await that.execGit(args)
     })
+  }
+
+  async sparseCheckout(path: string): Promise<void> {
+    const that = this
+    await retryHelper.execute(async () =>
+      that.execGit(['sparse-checkout', 'init', '--cone'])
+    )
+
+    await retryHelper.execute(async () =>
+      that.execGit(['sparse-checkout', 'set', path])
+    )
   }
 
   async getDefaultBranch(repositoryUrl: string): Promise<string> {

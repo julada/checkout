@@ -35,6 +35,11 @@ export interface IGitSourceSettings {
   fetchDepth: number
 
   /**
+   * The sparse checkout path
+   */
+  sparseCheckoutPath: string
+
+  /**
    * Indicates whether to fetch LFS objects
    */
   lfs: boolean

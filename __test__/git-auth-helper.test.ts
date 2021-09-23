@@ -1,12 +1,12 @@
 import * as core from '@actions/core'
-import * as fs from 'fs'
-import * as gitAuthHelper from '../lib/git-auth-helper'
 import * as io from '@actions/io'
+import * as fs from 'fs'
 import * as os from 'os'
 import * as path from 'path'
-import * as stateHelper from '../lib/state-helper'
+import * as gitAuthHelper from '../lib/git-auth-helper'
 import {IGitCommandManager} from '../lib/git-command-manager'
 import {IGitSourceSettings} from '../lib/git-source-settings'
+import * as stateHelper from '../lib/state-helper'
 
 const isWindows = process.platform === 'win32'
 const testWorkspace = path.join(__dirname, '_temp', 'git-auth-helper')
@@ -690,6 +690,7 @@ async function setup(testName: string): Promise<void> {
     branchExists: jest.fn(),
     branchList: jest.fn(),
     checkout: jest.fn(),
+    sparseCheckout: jest.fn(),
     checkoutDetach: jest.fn(),
     config: jest.fn(
       async (key: string, value: string, globalConfig?: boolean) => {
@@ -770,7 +771,8 @@ async function setup(testName: string): Promise<void> {
     repositoryPath: '',
     sshKey: sshPath ? 'some ssh private key' : '',
     sshKnownHosts: '',
-    sshStrict: true
+    sshStrict: true,
+    sparseCheckoutPath: ''
   }
 }
 

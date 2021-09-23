@@ -1,16 +1,16 @@
 import * as core from '@actions/core'
+import * as io from '@actions/io'
+import * as path from 'path'
 import * as fsHelper from './fs-helper'
 import * as gitAuthHelper from './git-auth-helper'
 import * as gitCommandManager from './git-command-manager'
+import {IGitCommandManager} from './git-command-manager'
 import * as gitDirectoryHelper from './git-directory-helper'
+import {IGitSourceSettings} from './git-source-settings'
 import * as githubApiHelper from './github-api-helper'
-import * as io from '@actions/io'
-import * as path from 'path'
 import * as refHelper from './ref-helper'
 import * as stateHelper from './state-helper'
 import * as urlHelper from './url-helper'
-import {IGitCommandManager} from './git-command-manager'
-import {IGitSourceSettings} from './git-source-settings'
 
 export async function getSource(settings: IGitSourceSettings): Promise<void> {
   // Repository URL
@@ -125,7 +125,7 @@ export async function getSource(settings: IGitSourceSettings): Promise<void> {
 
     // Fetch
     core.startGroup('Fetching the repository')
-    if (settings.fetchDepth <= 0) {
+    if (settings.fetchDepth <= 0 && !settings.sparseCheckoutPath) {
       // Fetch all branches and tags
       let refSpec = refHelper.getRefSpecForAllHistory(
         settings.ref,
@@ -167,6 +167,11 @@ export async function getSource(settings: IGitSourceSettings): Promise<void> {
     core.startGroup('Checking out the ref')
     await git.checkout(checkoutInfo.ref, checkoutInfo.startPoint)
     core.endGroup()
+
+    //Sparse Checkout
+    if (settings.sparseCheckoutPath) {
+      await git.sparseCheckout(settings.sparseCheckoutPath)
+    }
 
     // Submodules
     if (settings.submodules) {

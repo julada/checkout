@@ -56,6 +56,8 @@ inputs:
   fetch-depth:
     description: 'Number of commits to fetch. 0 indicates all history for all branches and tags.'
     default: 1
+  sparse-checkout-path:
+    description: 'Sparse Checkout Path'
   lfs:
     description: 'Whether to download Git-LFS files'
     default: false

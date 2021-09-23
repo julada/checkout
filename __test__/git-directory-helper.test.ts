@@ -1,9 +1,9 @@
 import * as core from '@actions/core'
-import * as fs from 'fs'
-import * as gitDirectoryHelper from '../lib/git-directory-helper'
 import * as io from '@actions/io'
+import * as fs from 'fs'
 import * as path from 'path'
 import {IGitCommandManager} from '../lib/git-command-manager'
+import * as gitDirectoryHelper from '../lib/git-directory-helper'
 
 const testWorkspace = path.join(__dirname, '_temp', 'git-directory-helper')
 let repositoryPath: string
@@ -408,6 +408,7 @@ async function setup(testName: string): Promise<void> {
     config: jest.fn(),
     configExists: jest.fn(),
     fetch: jest.fn(),
+    sparseCheckout: jest.fn(),
     getDefaultBranch: jest.fn(),
     getWorkingDirectory: jest.fn(() => repositoryPath),
     init: jest.fn(),
